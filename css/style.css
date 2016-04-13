@@ -1,0 +1,67 @@
+input.preftxt {
+    width:400px;
+}
+
+input.fancybox {
+  border-radius: 2px;
+  border: 0px;
+  height: 3em;
+}
+
+
+h1 {
+  display: block;
+  text-align: center;
+}
+
+body {
+  -webkit-background-size: cover; /* For WebKit*/
+  -moz-background-size: cover;    /* Mozilla*/
+  -o-background-size: cover;      /* Opera*/
+  background-size: cover;         /* Generic*/
+  font-family: sans-serif;
+  color: #eeeeee
+}
+
+table {
+    background: #eeeeee;
+    color: #000000;
+}
+
+#target {
+  width: 25em;
+}
+
+#hangup {
+  background-color: #ae0000;
+  color:#ffffff;
+}
+
+.call-control {
+  margin: 1em 0 0 0;
+  height: 1.8em;
+  width: 4.8em;
+  border-radius: 2px;
+  font-size: 1em;            
+}
+
+#call {
+  background-color: #00ae00;
+  color:#ffffff;
+}
+
+input[type=checkbox] {
+  height: auto;
+}
+
+#log-container {
+  height: 15em;
+  overflow: scroll;
+  word-wrap: break-word;
+}
+
+#remote-media {
+  border-radius: 2px;
+  border: 1px black solid;
+  background: #eeeeee;
+}

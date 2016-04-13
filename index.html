@@ -1,0 +1,161 @@
+<html>
+	<head>
+		<title>HTML5 Test Application</title>
+		<link rel="stylesheet" href="css/style.css" />
+
+		<script src="js/jquery-2.2.3.js" type="text/javascript"></script>
+
+		<script language="javascript" type="text/javascript" src="js/jquery.cookie.js"></script>  
+
+<style>
+	 #remote-media:hover {
+		 cursor:hand;
+	 }
+
+	 #phone #sessions #webcam {
+		 z-index: 100;
+	 }
+</style>
+
+	</head>
+
+	<body onhashchange="return hash_change();"><center>
+
+		<div id=prefs style="align:center;background:#eeeeee;width:800px;height:400px;color:#000000;position:absolute;display:block;z-index:1;border-width:2px;border-style:outset" >
+			<h2>Preferences</h2>
+			<table>
+				<tr><td>Websocket</td><td><input class="preftxt" id="wsServers"></td></tr>
+				<tr><td>Caller ID Name</td><td><input class="preftxt" id="displayName"></td></tr>
+				<tr><td>SIP URI &nbsp; &nbsp; sip:</td><td><input class="preftxt" id="uri"></td></tr>
+				<tr><td>Auth User</td><td><input class="preftxt" id="authorizationUser"></td></tr>
+				<tr><td>Password</td><td><input class="preftxt" id="password"></td></tr>
+			</table>
+			<button onclick="$('#prefs').hide();save_prefs()">Save Current</button>
+			<button onclick="default_prefs()">Restore Defaults</button>
+		</div>
+
+		<p style="color:#000000;">Remote Video: <button id=vidtog onclick="vid_toggle()">video big</button></p>
+		<video width=320 height=180 id="remote-media" ></video>
+		<br>
+		<br>
+		<table border=1 cellpadding=5 width=650>
+			<tr><td align="center"/>
+				<label for="video-enabled">Video?</label><input type="checkbox" id="video-enabled">
+				<input class="fancybox" type="text" id="target" placeholder="Enter an extension" autofocus> &nbsp; &nbsp;
+				<button onclick="dial();" id="call" class="call-control" value="Call">Call</button>
+				<button id="hangup" class="call-control" onclick="endSession();" hidden=true>Hangup</button>
+				<p></p>
+				<button id="oprefs" onclick="$('#prefs').show()">Prefs</button>
+				<p></p>
+			</td></tr>
+		</table>
+
+<script>
+
+var big_vid = false;
+
+function vid_toggle() {
+	var div = document.getElementById('remote-media')
+		if (big_vid) {
+			div.style.width = 320;
+			div.style.height = 180;
+			big_vid = false;
+			$("#vidtog").text("Video Big");
+		} else {
+			div.style.width = 800;
+			div.style.height = 450;
+			big_vid = true;
+			$("#vidtog").text("Video Small");
+		}
+ }
+
+var config = {
+  userAgentString: 'SIP.js/0.7.3-devel FREESWITCH TEST APP',
+  traceSip: true,
+};
+
+config.wsServers = $.cookie("wsServers");
+config.uri = $.cookie("uri");
+config.authorizationUser = $.cookie("authorizationUser");
+config.displayName = $.cookie("displayName");
+config.password = $.cookie("password");
+
+function set_fields() {
+	$("#wsServers").val(config.wsServers);
+	$("#uri").val(config.uri);
+	$("#authorizationUser").val(config.authorizationUser);
+	$("#displayName").val(config.displayName);
+	$("#password").val(config.password);
+}
+
+set_fields();
+
+function write_cookies()
+{
+	$.cookie("wsServers", config.wsServers, { expires: 365 })
+	$.cookie("uri", config.uri, { expires: 365 })
+
+	config.authorizationUser = config.authorizationUser.replace(/\s/g, '');
+	$.cookie("authorizationUser", config.authorizationUser, { expires: 365 })
+
+	$.cookie("displayName", config.displayName, { expires: 365 })
+
+	$.cookie("password", config.password, { expires: 365 })
+
+	delete ua;
+	ua = new SIP.UA(config);
+}
+
+function default_prefs() {
+	config.wsServers = "wss://developer.runamedia.com:7443";
+	config.uri = "1004@developer.runamedia.com";
+	config.authorizationUser = "1004";
+	config.displayName = "User 1004";
+	config.password = "123456";
+	write_cookies();
+	set_fields();
+}
+
+function save_prefs() {
+	config.wsServers = $("#wsServers").val();
+	config.uri = $("#uri").val();
+	config.authorizationUser = $("#authorizationUser").val();
+	config.displayName = $("#displayName").val();
+	config.password = $("#password").val();
+
+	write_cookies();
+}
+
+$('#prefs').hide();
+
+</script>
+
+<script src="js/sip-0.7.3.js"></script>
+<script src="js/phone.js"></script>
+
+<script>
+
+function hash_change() {
+
+	if (window.location.hash) {
+		var hvar = window.location.hash.substring(1);
+		var sp = hvar.split("^^"); 
+		$("#target").val(sp[0]);
+	
+		if (sp[1]) {
+			config.displayName = sp[1];
+			$("#displayName").val(config.displayName);
+			save_prefs();
+			window.location.hash = "";
+		}   
+	
+		dial();
+	}
+}
+
+hash_change();
+
+</script>
+
+</body>
+</html>
